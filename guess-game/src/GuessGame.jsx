@@ -14,7 +14,6 @@ const GuessGame = ({ data }) => {
         state: "DEFAULT",
       }))
   );
-  // console.log(data);
 
   const handleCardClick = (option) => {
     setButtonOptions(
@@ -29,17 +28,39 @@ const GuessGame = ({ data }) => {
     );
   };
 
-  //maybe filter all cards with state "SELECTED" and check if they match
+  //check for objects with "selected" state and map their values in an array
   useEffect(() => {
-    const selectedButtons = buttonOptions.filter((item) => {
-      return item.state === "SELECTED";
-    });
-    console.log(selectedButtons);
+    let isMatchFound = false;
+    const selectedButtons = buttonOptions
+      .filter((item) => {
+        return item.state === "SELECTED";
+      })
+      .map((item) => item.value);
+
+    //check if selected buttons are correct
     if (selectedButtons.length === 2) {
       //loop through data and check combinations
       for (let item of Object.entries(data)) {
-        // const stringItem = Object.keys(item) + Object.values(item);
-        console.log(item);
+        //if correct remove buttons
+        if (item.sort().join() === selectedButtons.sort().join()) {
+          const updatedButtonOptions = buttonOptions.filter(
+            (item) => !selectedButtons.includes(item.value)
+          );
+          setButtonOptions(updatedButtonOptions);
+          isMatchFound = true;
+        }
+      }
+
+      //if wrong picks change state and bg is changed in classList
+      if (!isMatchFound) {
+        setButtonOptions((prevOptions) =>
+          prevOptions.map((item) => ({
+            ...item,
+            state: selectedButtons.includes(item.value)
+              ? "INCORRECT"
+              : item.state,
+          }))
+        );
       }
     }
   }, [buttonOptions, data]);
@@ -49,12 +70,15 @@ const GuessGame = ({ data }) => {
       {buttonOptions.map((option) => (
         <button
           key={option.value}
-          className={option.state === "SELECTED" ? "selected" : ""}
+          className={`${option.state === "SELECTED" ? "selected" : ""} ${
+            option.state === "INCORRECT" ? "wrong-match" : ""
+          }`}
           onClick={() => handleCardClick(option)}
         >
           {option.value}
         </button>
       ))}
+      {buttonOptions.length === 0 ? <h1>Congratulations!</h1> : <p></p>}
     </>
   );
 };

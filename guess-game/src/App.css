@@ -13,3 +13,7 @@ button {
 .selected {
   background-color: #226bca;
 }
+
+.wrong-match {
+  background-color: red;
+}
