@@ -17,3 +17,7 @@ button {
 .wrong-match {
   background-color: red;
 }
+
+.default-state {
+  background-color: #4f5052;
+}

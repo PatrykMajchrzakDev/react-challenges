@@ -16,15 +16,23 @@ const GuessGame = ({ data }) => {
   );
 
   const handleCardClick = (option) => {
-    setButtonOptions(
-      buttonOptions.map((item) => {
-        return item === option
-          ? {
-              ...item,
-              state: "SELECTED",
-            }
-          : item;
-      })
+    const incorrectButtons = buttonOptions.filter(
+      (item) => item.state === "INCORRECT"
+    );
+
+    if (incorrectButtons.length === 2) {
+      setButtonOptions((prevOptions) =>
+        prevOptions.map((item) =>
+          item.state === "INCORRECT" ? { ...item, state: "DEFAULT" } : item
+        )
+      );
+    }
+
+    // Set the state of the clicked card to "SELECTED."
+    setButtonOptions((prevOptions) =>
+      prevOptions.map((item) =>
+        item === option ? { ...item, state: "SELECTED" } : item
+      )
     );
   };
 
@@ -72,7 +80,7 @@ const GuessGame = ({ data }) => {
           key={option.value}
           className={`${option.state === "SELECTED" ? "selected" : ""} ${
             option.state === "INCORRECT" ? "wrong-match" : ""
-          }`}
+          } ${option.state === "DEFAULT" ? "default-state" : ""}`}
           onClick={() => handleCardClick(option)}
         >
           {option.value}
