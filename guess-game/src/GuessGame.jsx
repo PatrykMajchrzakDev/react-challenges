@@ -16,6 +16,7 @@ const GuessGame = ({ data }) => {
   );
 
   const handleCardClick = (option) => {
+    //Check if there are at least two buttons with incorrect state and if so then change back to default
     const incorrectButtons = buttonOptions.filter(
       (item) => item.state === "INCORRECT"
     );
@@ -36,6 +37,7 @@ const GuessGame = ({ data }) => {
     );
   };
 
+  //check if selected buttons are correct by comparing them to default prop
   //check for objects with "selected" state and map their values in an array
   useEffect(() => {
     let isMatchFound = false;
@@ -45,7 +47,6 @@ const GuessGame = ({ data }) => {
       })
       .map((item) => item.value);
 
-    //check if selected buttons are correct
     if (selectedButtons.length === 2) {
       //loop through data and check combinations
       for (let item of Object.entries(data)) {
@@ -78,9 +79,15 @@ const GuessGame = ({ data }) => {
       {buttonOptions.map((option) => (
         <button
           key={option.value}
-          className={`${option.state === "SELECTED" ? "selected" : ""} ${
-            option.state === "INCORRECT" ? "wrong-match" : ""
-          } ${option.state === "DEFAULT" ? "default-state" : ""}`}
+          className={`${
+            option.state === "SELECTED"
+              ? "selected"
+              : option.state === "INCORRECT"
+              ? "wrong-match"
+              : option.state === "DEFAULT"
+              ? "default-state"
+              : ""
+          }`}
           onClick={() => handleCardClick(option)}
         >
           {option.value}
